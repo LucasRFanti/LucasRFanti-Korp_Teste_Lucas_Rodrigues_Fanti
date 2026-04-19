@@ -1,0 +1,92 @@
+<div class="dashboard-page">
+  <div class="page-header">
+    <div>
+      <h1>Dashboard</h1>
+      <p>Visão geral do sistema de faturamento e estoque.</p>
+    </div>
+    <a routerLink="/admin/notas-fiscais" class="btn-primary">+ Nova nota fiscal</a>
+  </div>
+
+  @if (loading) {
+    <div class="loading-box">Carregando indicadores...</div>
+  } @else {
+    <section class="kpis">
+      <article class="kpi-card">
+        <span class="kpi-label">Funcionários</span>
+        <strong>{{ totalFuncionarios }}</strong>
+        <small>Total cadastrado no portal</small>
+      </article>
+
+      <article class="kpi-card">
+        <span class="kpi-label">Produtos</span>
+        <strong>{{ totalProdutos }}</strong>
+        <small>Itens no catálogo</small>
+      </article>
+
+      <article class="kpi-card">
+        <span class="kpi-label">Estoque total</span>
+        <strong>{{ estoqueTotal }}</strong>
+        <small>Unidades somadas</small>
+      </article>
+
+      <article class="kpi-card">
+        <span class="kpi-label">Notas abertas</span>
+        <strong>{{ notasAbertas }}</strong>
+        <small>{{ notasFechadas }} fechadas</small>
+      </article>
+    </section>
+
+    <section class="dashboard-grid">
+      <article class="panel quick-actions">
+        <h2>Atalhos rápidos</h2>
+        <p>As ações mais usadas do dia a dia.</p>
+
+        <div class="quick-actions-grid">
+          <a routerLink="/admin/employees" class="quick-link">Gerenciar funcionários</a>
+          <a routerLink="/admin/produtos" class="quick-link">Gerenciar produtos</a>
+          <a routerLink="/admin/notas-fiscais" class="quick-link">Criar nota fiscal</a>
+          <a routerLink="/admin/notas-fiscais" class="quick-link">Imprimir nota fiscal</a>
+          <a routerLink="/admin/notas-fiscais-historico" class="quick-link">Histórico de notas</a>
+        </div>
+      </article>
+
+      <article class="panel recent-notes">
+        <h2>Últimas notas fiscais</h2>
+        <p>Últimos lançamentos registrados no sistema.</p>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Número</th>
+                <th>Status</th>
+                <th>Itens</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (nota of ultimasNotas; track nota.id) {
+                <tr>
+                  <td>#{{ nota.numero }}</td>
+                  <td>
+                    <span class="badge"
+                      [class.badge--info]="nota.status === 'Aberta' || nota.status === 0"
+                      [class.badge--danger]="nota.status === 'Fechada' || nota.status === 1">
+                      {{ nota.status }}
+                    </span>
+                  </td>
+                  <td>{{ nota.itens.length }}</td>
+                  <td>{{ toLocalDate(nota.criadoEm) | date:'dd/MM/yyyy HH:mm' }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="4" class="empty-row">Nenhuma nota fiscal encontrada.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  }
+</div>

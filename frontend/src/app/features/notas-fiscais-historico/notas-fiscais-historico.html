@@ -1,0 +1,82 @@
+<div class="page-header">
+  <h1>Histórico de Notas Fiscais</h1>
+  <button class="btn-clear-history" (click)="abrirConfirmacaoLimpeza()" [disabled]="limpandoHistorico">
+    {{ limpandoHistorico ? 'Limpando...' : 'Limpar histórico' }}
+  </button>
+</div>
+
+@if (confirmandoLimpeza) {
+  <div class="confirm-clear-box" role="alert">
+    <div>
+      <strong>Limpar todo o histórico?</strong>
+      <p>Essa ação remove todas as notas fechadas e não pode ser desfeita.</p>
+    </div>
+    <div class="confirm-clear-actions">
+      <button class="btn-secondary btn-small" (click)="cancelarLimpeza()" [disabled]="limpandoHistorico">Cancelar</button>
+      <button class="btn-clear-history btn-clear-history--confirm" (click)="limparHistorico()" [disabled]="limpandoHistorico">
+        {{ limpandoHistorico ? 'Limpando...' : 'Confirmar limpeza' }}
+      </button>
+    </div>
+  </div>
+}
+
+<div class="filter-bar">
+  <button class="btn-secondary btn-small" [class.active]="periodo === 'hoje'" (click)="selecionarPeriodo('hoje')">Hoje</button>
+  <button class="btn-secondary btn-small" [class.active]="periodo === '7dias'" (click)="selecionarPeriodo('7dias')">Últimos 7 dias</button>
+  <button class="btn-secondary btn-small" [class.active]="periodo === '30dias'" (click)="selecionarPeriodo('30dias')">Últimos 30 dias</button>
+  <button class="btn-secondary btn-small" [class.active]="periodo === 'todos'" (click)="selecionarPeriodo('todos')">Todos</button>
+</div>
+
+<div class="search-bar">
+  <input
+    type="text"
+    [value]="buscaTexto"
+    (input)="atualizarBusca($any($event.target).value)"
+    placeholder="Buscar por número da nota, código ou nome do produto"
+    aria-label="Buscar histórico de notas"
+  />
+</div>
+
+@if (loading) {
+  <div class="loading-box">Carregando histórico...</div>
+} @else {
+  <div class="table-card">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Número</th>
+          <th>Status</th>
+          <th>Criado em</th>
+          <th>Quantia</th>
+          <th>Descrição</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (n of historicoFiltrado; track n.id) {
+          <tr>
+            <td><strong>#{{ n.numero }}</strong></td>
+            <td><span class="badge badge--success">OK</span></td>
+            <td>
+              <div class="note-meta">
+                <span>{{ toLocalDate(n.criadoEm) | date:'dd/MM/yyyy' }}</span>
+                <small>{{ toLocalDate(n.criadoEm) | date:'HH:mm' }}</small>
+              </div>
+            </td>
+            <td>
+              <span class="badge badge--success">{{ totalQuantidadeItens(n) }} un.</span>
+            </td>
+            <td>
+              <span class="descricao-chip" [title]="descricaoCompleta(n)">
+                {{ descricaoResumo(n) }}
+              </span>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="empty-row">Nenhuma nota fechada no período selecionado.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

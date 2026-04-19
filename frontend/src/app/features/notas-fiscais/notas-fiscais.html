@@ -1,0 +1,162 @@
+<div class="page-header">
+  <h1>Notas Fiscais</h1>
+  <button class="btn-primary" (click)="openNew()">+ Nova Nota Fiscal</button>
+</div>
+
+@if (loading) {
+  <div class="loading-box">Carregando notas fiscais...</div>
+} @else {
+  <h2 class="section-title">Pendentes para impressão</h2>
+  <div class="table-card">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Número</th>
+          <th>Status</th>
+          <th>Criado em</th>
+          <th>Quantia</th>
+          <th>Descrição</th>
+          <th class="col-actions">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (n of notasPendentes; track n.id) {
+          <tr>
+            <td><strong>#{{ n.numero }}</strong></td>
+
+            <td>
+              <span class="badge"
+                [class.badge--success]="isFechada(n)"
+                [class.badge--danger]="isAberta(n)">
+                {{ statusLabel(n) }}
+              </span>
+            </td>
+
+            <td>
+              <div class="note-meta">
+                <span>{{ toLocalDate(n.criadoEm) | date:'dd/MM/yyyy' }}</span>
+                <small>{{ toLocalDate(n.criadoEm) | date:'HH:mm' }}</small>
+              </div>
+            </td>
+
+            <td>
+              <span class="badge badge--success">{{ totalQuantidadeItens(n) }} un.</span>
+            </td>
+
+            <td>
+              <span class="descricao-chip" [title]="descricaoCompleta(n)">
+                {{ descricaoResumo(n) }}
+              </span>
+            </td>
+
+            <td class="col-actions">
+              <div class="actions">
+                <button
+                  class="btn-primary btn-small"
+                  [disabled]="isFechada(n) || imprimindo === n.id"
+                  [class.btn-disabled]="isFechada(n)"
+                  (click)="imprimir(n)"
+                  [title]="isFechada(n) ? 'Nota já fechada' : 'Imprimir e fechar nota'">
+                  @if (imprimindo === n.id) {
+                    <span>⏳ Processando...</span>
+                  } @else {
+                    <span>🖨️ Imprimir</span>
+                  }
+                </button>
+
+                <button
+                  class="btn-secondary btn-small btn-discard"
+                  [disabled]="removendo === n.id"
+                  (click)="excluir(n)"
+                  title="Descartar nota pendente">
+                  @if (removendo === n.id) {
+                    <span>⏳ Removendo...</span>
+                  } @else {
+                    <span>🗑️ Descartar</span>
+                  }
+                </button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="empty-row">Nenhuma nota pendente para impressão.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+}
+
+@if (notaParaDescartar) {
+  <div class="modal-overlay" (click)="cancelarDescarte()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h2>Confirmar descarte</h2>
+      <p>Deseja descartar a nota <strong>#{{ notaParaDescartar.numero }}</strong>?</p>
+      <p>Esta ação não pode ser desfeita.</p>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="cancelarDescarte()" [disabled]="!!removendo">Cancelar</button>
+        <button type="button" class="btn-confirm-danger" (click)="confirmarDescarte()" [disabled]="!!removendo">
+          {{ removendo ? 'Descartando...' : 'Confirmar descarte' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal modal--large" (click)="$event.stopPropagation()">
+      <h2>Nova Nota Fiscal</h2>
+
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div formArrayName="itens">
+          @for (item of itensArray.controls; track i; let i = $index) {
+            <div [formGroupName]="i" class="item-row">
+
+              <div class="field field--grow">
+                <label>Produto *</label>
+                <select formControlName="produtoId">
+                  <option value="">Selecione um produto...</option>
+                  @for (p of produtos; track p.id) {
+                    <option [value]="p.id">
+                      {{ p.codigo }} — {{ p.descricao }} (saldo: {{ p.saldo }})
+                    </option>
+                  }
+                </select>
+              </div>
+
+              <div class="field field--small">
+                <label>Qtd *</label>
+                <input type="number" formControlName="quantidade" min="1" placeholder="1" />
+              </div>
+
+              <button
+                type="button"
+                class="btn-icon btn-icon--danger"
+                (click)="removerItem(i)"
+                [disabled]="itensArray.length === 1"
+                title="Remover item">
+                🗑️
+              </button>
+
+            </div>
+          }
+        </div>
+
+        <button type="button" class="btn-secondary btn-small" (click)="adicionarItem()">
+          + Adicionar produto
+        </button>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" (click)="closeModal()">Cancelar</button>
+          <button type="submit" class="btn-primary" [disabled]="saving">
+            {{ saving ? 'Criando...' : 'Criar Nota Fiscal' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

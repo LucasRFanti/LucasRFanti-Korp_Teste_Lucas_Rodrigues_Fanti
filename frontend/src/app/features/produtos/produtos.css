@@ -1,0 +1,80 @@
+:host {
+  display: block;
+}
+
+.table td:first-child {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.table td:nth-child(2) {
+  color: #334155;
+}
+
+.product-code {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.stock-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.table .col-saldo,
+.table .col-actions {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.table .col-actions .actions {
+  justify-content: center;
+}
+
+.stock-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #22c55e;
+}
+
+.stock-dot--low {
+  background: #f59e0b;
+}
+
+.stock-dot--zero {
+  background: #ef4444;
+}
+
+.btn-confirm-danger {
+  background: #dc2626;
+  color: #fff;
+  border: 1px solid #dc2626;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.btn-confirm-danger:hover {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.btn-confirm-danger:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.error-input {
+  border-color: #dc2626 !important;
+  background: #fff8f8;
+}

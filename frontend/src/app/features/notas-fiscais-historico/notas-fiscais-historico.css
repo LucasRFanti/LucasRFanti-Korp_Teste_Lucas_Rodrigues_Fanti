@@ -1,0 +1,122 @@
+:host {
+  display: block;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.btn-clear-history {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid #ef4444;
+  background: #ef4444;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.25);
+}
+
+.btn-clear-history:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.btn-clear-history:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-clear-history--confirm {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.confirm-clear-box {
+  margin: 10px 0 14px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #fecaca;
+  background: #fff1f2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.confirm-clear-box p {
+  margin: 4px 0 0;
+  color: #7f1d1d;
+  font-size: 13px;
+}
+
+.confirm-clear-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.filter-bar .btn-secondary.active {
+  background: #cbd5e1;
+  color: #0f172a;
+}
+
+.search-bar {
+  margin-bottom: 14px;
+}
+
+.search-bar input {
+  width: 100%;
+  max-width: 520px;
+  height: 42px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: #01696f;
+  box-shadow: 0 0 0 3px rgba(1, 105, 111, 0.15);
+}
+
+.table td:first-child strong {
+  font-size: 15px;
+  color: #0f172a;
+}
+
+.note-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.note-meta small {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.descricao-chip {
+  display: inline-block;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #334155;
+  font-weight: 600;
+}

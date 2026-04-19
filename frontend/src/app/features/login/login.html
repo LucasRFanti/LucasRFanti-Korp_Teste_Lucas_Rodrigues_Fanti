@@ -1,0 +1,31 @@
+<div class="login-wrapper">
+  <form class="login-card" [formGroup]="form" (ngSubmit)="onLogin()">
+    <h2>Portal Admin</h2>
+
+    <div class="field">
+      <label for="email">E-mail</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        placeholder="seu@email.com"
+      />
+    </div>
+
+    <div class="field">
+      <label for="senha">Senha</label>
+        <input
+          id="senha"
+          type="password"
+          formControlName="senha"
+          placeholder="••••••••"
+          autocomplete="current-password" />
+    </div>
+
+    @if (erro) {
+      <p class="erro">{{ erro }}</p>
+    }
+
+    <button type="submit" [disabled]="form.invalid">Entrar</button>
+  </form>
+</div>

@@ -1,0 +1,118 @@
+<div class="page-header">
+  <h1>Produtos</h1>
+  <button class="btn-primary" (click)="openNew()">+ Novo Produto</button>
+</div>
+
+<div *ngIf="loading" class="loading-box">Carregando produtos...</div>
+
+<div *ngIf="!loading" class="table-card">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Descrição</th>
+        <th class="col-saldo">Saldo</th>
+        <th class="col-actions">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of produtos">
+        <td><span class="product-code">{{ p.codigo }}</span></td>
+        <td>{{ p.descricao }}</td>
+        <td class="col-saldo">
+          <div class="stock-cell">
+            <span
+              class="stock-dot"
+              [class.stock-dot--low]="p.saldo > 0 && p.saldo <= 5"
+              [class.stock-dot--zero]="p.saldo === 0">
+            </span>
+            <span
+              class="badge"
+              [class.badge--success]="p.saldo > 5"
+              [class.badge--warning]="p.saldo > 0 && p.saldo <= 5"
+              [class.badge--danger]="p.saldo === 0">
+              {{ p.saldo }} un.
+            </span>
+          </div>
+        </td>
+        <td class="col-actions">
+          <div class="actions">
+            <button class="btn-icon" (click)="openEdit(p)" title="Editar">✏️</button>
+            <button class="btn-icon btn-icon--danger" (click)="openDeleteConfirm(p)" title="Excluir">🗑️</button>
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="produtos.length === 0">
+        <td colspan="4" class="empty-row">Nenhum produto cadastrado ainda.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal-overlay" *ngIf="produtoParaExcluir" (click)="closeDeleteConfirm()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h2>Confirmar exclusão</h2>
+    <p>
+      Deseja excluir o produto
+      <strong>{{ produtoParaExcluir.codigo }} — {{ produtoParaExcluir.descricao }}</strong>?
+    </p>
+    <p>Esta ação não pode ser desfeita.</p>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-secondary" (click)="closeDeleteConfirm()" [disabled]="!!deletingId">Cancelar</button>
+      <button type="button" class="btn-confirm-danger" (click)="confirmDelete()" [disabled]="!!deletingId">
+        {{ deletingId ? 'Excluindo...' : 'Confirmar exclusão' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Criar / Editar -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h2>{{ editingId ? 'Editar Produto' : 'Novo Produto' }}</h2>
+
+    <form [formGroup]="form" (ngSubmit)="save()">
+
+      <div class="field">
+        <label for="codigo">Código *</label>
+        <input
+          id="codigo"
+          formControlName="codigo"
+          placeholder="Ex: PROD-001"
+          [class.error-input]="isInvalid('codigo')" />
+        <span class="error" *ngIf="isInvalid('codigo')">{{ errorMsg('codigo') }}</span>
+      </div>
+
+      <div class="field">
+        <label for="descricao">Descrição *</label>
+        <input
+          id="descricao"
+          formControlName="descricao"
+          placeholder="Nome do produto"
+          [class.error-input]="isInvalid('descricao')" />
+        <span class="error" *ngIf="isInvalid('descricao')">{{ errorMsg('descricao') }}</span>
+      </div>
+
+      <div class="field">
+        <label for="saldo">Saldo em Estoque *</label>
+        <input
+          id="saldo"
+          type="number"
+          formControlName="saldo"
+          min="0"
+          placeholder="0"
+          [class.error-input]="isInvalid('saldo')" />
+        <span class="error" *ngIf="isInvalid('saldo')">{{ errorMsg('saldo') }}</span>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="saving">
+          {{ saving ? 'Salvando...' : (editingId ? 'Salvar alterações' : 'Criar produto') }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

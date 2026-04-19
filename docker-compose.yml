@@ -1,0 +1,68 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: korp-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:-YourStrong@Passw0rd}"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  backend-estoque:
+    build:
+      context: ./backend-estoque
+      dockerfile: Dockerfile
+    container_name: korp-backend-estoque
+    environment:
+      ASPNETCORE_URLS: "http://+:8080"
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=KorpEstoque;User Id=sa;Password=${MSSQL_SA_PASSWORD:-YourStrong@Passw0rd};TrustServerCertificate=True;Encrypt=False"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    ports:
+      - "5001:8080"
+
+  backend-faturamento:
+    build:
+      context: ./backend-faturamento
+      dockerfile: Dockerfile
+    container_name: korp-backend-faturamento
+    environment:
+      ASPNETCORE_URLS: "http://+:8080"
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=PortalAdminDb;User Id=sa;Password=${MSSQL_SA_PASSWORD:-YourStrong@Passw0rd};TrustServerCertificate=True;Encrypt=False"
+      Jwt__Key: "${JWT_KEY:-troque-esta-chave-jwt-em-producao-com-32+chars}"
+      Jwt__Issuer: "${JWT_ISSUER:-portal-admin}"
+      Jwt__Audience: "${JWT_AUDIENCE:-portal-admin}"
+      EstoqueService__BaseUrl: "http://backend-estoque:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      backend-estoque:
+        condition: service_started
+    ports:
+      - "5090:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: korp-frontend
+    depends_on:
+      backend-faturamento:
+        condition: service_started
+      backend-estoque:
+        condition: service_started
+    ports:
+      - "4200:80"
+
+volumes:
+  sql_data:

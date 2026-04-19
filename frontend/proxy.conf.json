@@ -1,0 +1,27 @@
+{
+  "/api/notasfiscais": {
+    "target": "http://localhost:5090",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/api/notasfiscais/**": {
+    "target": "http://localhost:5090",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/api/employess": {
+    "target": "http://localhost:5090",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/api/auth": {
+    "target": "http://localhost:5090",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/api/produtos": {
+    "target": "http://localhost:5001",
+    "secure": false,
+    "changeOrigin": true
+  }
+}
