@@ -140,8 +140,6 @@ docker compose down
 docker compose down -v
 ```
 
-> `down -v` remove volumes e zera o banco.
-
 ---
 
 ## Como executar local (sem Docker)
