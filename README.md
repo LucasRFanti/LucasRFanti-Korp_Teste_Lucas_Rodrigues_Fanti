@@ -192,8 +192,6 @@ Ao subir o backend de faturamento, se não houver usuário, é criado automatica
 - **E-mail:** `admin@portal.com`
 - **Senha:** `123456`
 
-> Recomendação para produção: trocar imediatamente a senha e remover criação automática.
-
 ---
 
 ## Concorrência e idempotência
