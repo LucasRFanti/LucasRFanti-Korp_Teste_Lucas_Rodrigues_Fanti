@@ -67,3 +67,14 @@ docker compose down -v
 - As migrations rodam no startup dos backends.
 - As connection strings são injetadas pelo `docker-compose.yml`.
 - O frontend usa Nginx com proxy para as APIs (`/api/...`), então funciona direto em produção no Docker.
+
+## 6) Troubleshooting
+
+- Aviso `The "MSSQL_SA_PASSWORD" variable is not set`:
+	- Crie o arquivo `.env` na raiz: `Copy-Item .env.example .env`
+	- Suba novamente: `docker compose up -d --build`
+
+- Erro SQL `Login failed for user 'sa'` repetindo nos logs:
+	- Geralmente a senha do `.env` foi alterada, mas o volume existente mantém estado anterior.
+	- Faça reset local: `docker compose down -v`
+	- Suba de novo: `docker compose up -d --build`

@@ -140,6 +140,17 @@ docker compose down
 docker compose down -v
 ```
 
+### Troubleshooting Docker
+
+- Aviso `The "MSSQL_SA_PASSWORD" variable is not set`:
+   - Crie o arquivo `.env` na raiz: `Copy-Item .env.example .env`
+   - Suba novamente: `docker compose up -d --build`
+
+- Erro SQL `Login failed for user 'sa'` em loop:
+   - Normalmente ocorre quando a senha do `.env` mudou, mas o volume antigo do SQL ainda está ativo.
+   - Faça reset do banco local: `docker compose down -v`
+   - Depois suba novamente: `docker compose up -d --build`
+
 ---
 
 ## Como executar local (sem Docker)
