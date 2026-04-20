@@ -245,8 +245,7 @@ public class NotasFiscaisController : ControllerBase
         if (nota.Status == StatusNota.Fechada)
             return Conflict(new { mensagem = "Nota já está Fechada e não pode ser reimpressa." });
 
-        var estoqueUrl = _config["EstoqueService:BaseUrl"] ?? "http://localhost:5001";
-        var client = _httpFactory.CreateClient();
+        var client = _httpFactory.CreateClient("EstoqueService");
         var errosNegocio = new List<string>();
         var errosInfra = new List<string>();
 
@@ -255,7 +254,7 @@ public class NotasFiscaisController : ControllerBase
             try
             {
                 var resp = await client.PatchAsJsonAsync(
-                    $"{estoqueUrl}/api/produtos/{item.ProdutoId}/deduzir-saldo",
+                    $"/api/produtos/{item.ProdutoId}/deduzir-saldo",
                     new { Quantidade = item.Quantidade });
 
                 if (resp.StatusCode == System.Net.HttpStatusCode.NotFound)

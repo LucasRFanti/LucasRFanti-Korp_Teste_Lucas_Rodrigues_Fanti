@@ -10,6 +10,13 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("EstoqueService", (sp, client) =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var baseUrl = config["EstoqueService:BaseUrl"] ?? "http://localhost:5001";
+    client.BaseAddress = new Uri(baseUrl);
+    client.Timeout = TimeSpan.FromSeconds(5);
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers()
