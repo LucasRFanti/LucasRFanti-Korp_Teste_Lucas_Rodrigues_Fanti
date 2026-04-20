@@ -65,7 +65,7 @@ export class NotasFiscaisHistorico implements OnInit {
     if (this.limpandoHistorico) return;
 
     this.limpandoHistorico = true;
-    this.toast.show('Limpando histórico de notas...', 'info', 2000);
+    this.toast.show('Limpando histórico de notas...', 'info', 5000);
 
     this.notaService.limparHistorico().subscribe({
       next: (res) => {

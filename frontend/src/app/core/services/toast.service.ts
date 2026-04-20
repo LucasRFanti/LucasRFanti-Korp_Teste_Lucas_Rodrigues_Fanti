@@ -13,10 +13,13 @@ export class ToastService {
   toasts = signal<Toast[]>([]);
   private next = 0;
 
-  show(message: string, type: ToastType = 'info', duration = 3500) {
+  private readonly minDurationMs = 5000;
+
+  show(message: string, type: ToastType = 'info', durationMs?: number) {
     const id = ++this.next;
     this.toasts.update(t => [...t, { id, message, type }]);
-    setTimeout(() => this.remove(id), duration);
+    const effectiveDurationMs = Math.max(durationMs ?? this.minDurationMs, this.minDurationMs);
+    setTimeout(() => this.remove(id), effectiveDurationMs);
   }
 
   success(msg: string) { this.show(msg, 'success'); }
